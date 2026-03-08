@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI 실무 활용 16일 마스터 코스</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <!-- Chosen Palette: Emerald & Slate (Trustworthy, clean, focus-oriented) -->
+    <!-- Application Structure Plan: 
+         1. Dashboard Header: Summary metrics of the 16-day journey.
+         2. Learning Progress Visualization: Chart.js to show the balance between "Prompting", "Data Analysis", and "Project Management".
+         3. Interactive Daily Cards: Each day (1-16) is a card. 
+            - Includes a "Detail View" (Expandable) containing step-by-step instructions.
+            - Excludes any coding/development tasks as requested.
+         4. Navigation: Quick jumps to Week 1-4 sections. -->
+    <!-- Visualization & Content Choices: 
+         - Use Accordion-style "See More" for deep-dive practice details to keep the UI clean.
+         - Focus GitHub usage on 'Project Management' and 'Markdown Documentation' instead of code.
+         - Use Gemini for its multimodal strengths (PDF/Image analysis). -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+
+    <style>
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 450px;
+            margin: auto;
+            height: 280px;
+        }
+        .detail-content {
+            display: none;
+            overflow: hidden;
+            transition: max-height 0.3s ease-out;
+        }
+        .detail-content.active {
+            display: block;
+        }
+        .card-shadow {
+            box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.05);
+        }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 font-sans leading-relaxed">
+
+    <!-- Header Section -->
+    <header class="bg-white border-b border-slate-200 sticky top-0 z-50">
+        <div class="max-w-5xl mx-auto px-6 h-20 flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 bg-emerald-600 rounded-lg flex items-center justify-center text-white text-xl font-bold">A</div>
+                <h1 class="text-xl font-extrabold tracking-tight text-slate-900">AI 실무 역량 강화 16일</h1>
+            </div>
+            <nav class="hidden md:flex gap-6 text-sm font-semibold text-slate-500">
+                <a href="#week1" class="hover:text-emerald-600 transition-colors">1주차</a>
+                <a href="#week2" class="hover:text-emerald-600 transition-colors">2주차</a>
+                <a href="#week3" class="hover:text-emerald-600 transition-colors">3주차</a>
+                <a href="#week4" class="hover:text-emerald-600 transition-colors">4주차</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="max-w-5xl mx-auto px-6 py-12 space-y-16">
+
+        <!-- Intro Section -->
+        <section class="text-center space-y-4">
+            <span class="text-emerald-600 font-bold tracking-widest text-sm uppercase">Career Growth Program</span>
+            <h2 class="text-4xl font-black text-slate-900">비개발자를 위한 <span class="text-emerald-600">AI 올인원</span> 커리큘럼</h2>
+            <p class="text-slate-500 max-w-2xl mx-auto">
+                코딩 없이 AI를 업무에 즉시 적용하는 법을 배웁니다. ChatGPT, Gemini를 비서로 고용하고, GitHub을 통해 업무의 이력과 프로젝트를 체계적으로 관리하세요.
+            </p>
+        </section>
+
+        <!-- Stats Section -->
+        <section class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            <div class="bg-white p-8 rounded-3xl border border-slate-200 card-shadow">
+                <h3 class="font-bold text-slate-800 mb-6 flex items-center gap-2">
+                    <span class="w-2 h-6 bg-emerald-500 rounded-full"></span> 학습 영역 분포
+                </h3>
+                <div class="chart-container">
+                    <canvas id="skillChart"></canvas>
+                </div>
+            </div>
+            <div class="bg-emerald-900 p-8 rounded-3xl text-white flex flex-col justify-center">
+                <h3 class="text-2xl font-bold mb-4">학습 목표</h3>
+                <ul class="space-y-4 text-emerald-100">
+                    <li class="flex items-start gap-3">
+                        <span class="text-emerald-400">✔</span>
+                        <span>단순 질문을 넘어 <strong>업무 맞춤형 프롬프트</strong> 설계 능력 확보</span>
+                    </li>
+                    <li class="flex items-start gap-3">
+                        <span class="text-emerald-400">✔</span>
+                        <span>Gemini를 통한 <strong>문서 및 이미지 데이터</strong>의 즉각적 요약/분석</span>
+                    </li>
+                    <li class="flex items-start gap-3">
+                        <span class="text-emerald-400">✔</span>
+                        <span>GitHub을 활용한 <strong>프로젝트 일정 관리</strong> 및 문서 보관 자동화</span>
+                    </li>
+                    <li class="flex items-start gap-3">
+                        <span class="text-emerald-400">✔</span>
+                        <span>AI 기반의 <strong>비즈니스 창의성</strong>(기획, 마케팅) 극대화</span>
+                    </li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- Main Curriculum Grid -->
+        <div id="curriculum-list" class="space-y-12">
+            <!-- Content will be injected by JavaScript -->
+        </div>
+
+    </main>
+
+    <footer class="bg-slate-100 border-t border-slate-200 py-12 mt-20">
+        <div class="max-w-5xl mx-auto px-6 text-center text-slate-400 text-sm">
+            <p>본 커리큘럼은 AI 도구의 실무 활용을 돕기 위해 설계되었습니다.</p>
+            <p class="mt-2">© 2024 AI Career Coach. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script>
+        const curriculumData = [
+            {
+                week: 1,
+                weekTitle: "1주차: AI 소통 및 기본 도구 정복",
+                days: [
+                    {
+                        day: 1,
+                        title: "AI와의 첫 만남 및 도구 세팅",
+                        summary: "ChatGPT와 Gemini 계정 생성 및 기본 인터페이스 익히기",
+                        details: "• <b>이론:</b> 생성형 AI가 답변을 생성하는 방식(확률적 모델) 이해하기.<br>• <b>실습:</b> ChatGPT와 Gemini에 동일한 질문(예: '최신 AI 트렌드 요약')을 던져보고 답변의 문체와 정보 정확도 차이 리포트 작성하기.<br>• <b>팁:</b> 각 도구의 장단점을 정리하여 상황별 선택 기준 마련하기."
+                    },
+                    {
+                        day: 2,
+                        title: "프로페셔널 프롬프트 엔지니어링",
+                        summary: "질문 한 번으로 원하는 결과물을 얻는 6단계 공식 학습",
+                        details: "• <b>이론:</b> 맥락(Context), 역할(Role), 지시(Instruction), 제약조건(Constraint)의 중요성.<br>• <b>실습:</b> '신규 서비스 런칭 이메일 작성'을 주제로 하여, 단순 질문과 구조화된 질문의 결과물 비교하기.<br>• <b>도전:</b> AI가 나에게 다시 질문하게 만드는 '역질문 프롬프트' 작성해보기."
+                    },
+                    {
+                        day: 3,
+                        title: "Gemini 멀티모달: 이미지와 문서 분석",
+                        summary: "이미지 속 텍스트 추출 및 복잡한 PDF 문서 핵심 요약",
+                        details: "• <b>이론:</b> 멀티모달(Multimodal)의 정의와 비즈니스 활용 사례.<br>• <b>실습:</b> 영문으로 된 20페이지 분량의 보고서를 Gemini에 업로드하여 한국어 요약본 및 액션 플랜(To-do List) 도출하기.<br>• <b>창의 실습:</b> 화이트보드에 손으로 그린 아이디어 스케치를 찍어 Gemini에게 '기획안 초안'으로 변환 요청하기."
+                    },
+                    {
+                        day: 4,
+                        title: "GitHub: 비개발자를 위한 클라우드 기록소",
+                        summary: "코딩 대신 기록과 관리를 위한 GitHub 시작하기",
+                        details: "• <b>이론:</b> 버전 관리란 무엇인가? 왜 비개발자에게도 필요한가?<br>• <b>실습:</b> GitHub 계정 생성 및 '나의 업무 지식베이스' 레포지토리(저장소) 만들기.<br>• <b>기능:</b> 웹 인터페이스를 통해 간단한 텍스트 파일(Markdown)을 만들고 수정 이력을 확인하는 법 익히기."
+                    }
+                ]
+            },
+            {
+                week: 2,
+                weekTitle: "2주차: 업무 자동화 및 콘텐츠 생성",
+                days: [
+                    {
+                        day: 5,
+                        title: "비즈니스 메일 및 보고서 자동화",
+                        summary: "메일 톤앤매너 변경 및 장문 보고서 구조 잡기",
+                        details: "• <b>이론:</b> 독자 중심의 비즈니스 라이팅 구조 학습.<br>• <b>실습:</b> 거절 메시지, 협상 제안 등 까다로운 상황을 AI와 역할극(Roleplay)하며 최적의 답변 스크립트 완성하기.<br>• <b>응용:</b> 긴 회의록을 입력하여 '경영진 보고용 1페이지 요약본'과 '실무자용 할 일'로 자동 구분하기."
+                    },
+                    {
+                        day: 6,
+                        title: "AI 활용 프레젠테이션 설계",
+                        summary: "발표 슬라이드 아웃라인 및 스피치 대본 생성",
+                        details: "• <b>이론:</b> 논리적인 피라미드 구조(Minto Pyramid) 보고 기법.<br>• <b>실습:</b> 주제만 입력하여 전체 슬라이드 구성안(10P) 및 각 장표에 들어갈 핵심 메시지 도출하기.<br>• <b>고급:</b> AI에게 '발표 예상 질문 5가지'를 뽑게 하고 그에 대한 반박 논리 준비하기."
+                    },
+                    {
+                        day: 7,
+                        title: "이미지 생성 AI와 비주얼 커뮤니케이션",
+                        summary: "ChatGPT(DALL-E)와 Gemini를 활용한 비즈니스 이미지 제작",
+                        details: "• <b>이론:</b> 저작권 걱정 없는 AI 이미지 생성 원리와 프롬프트 기법.<br>• <b>실습:</b> 블로그 썸네일, 이벤트 포스터, 카드뉴스 배경 이미지를 AI로 제작하고 브랜드 컬러 반영 요청하기.<br>• <b>비교:</b> ChatGPT와 Gemini의 이미지 생성 스타일 차이 비교 리서치."
+                    },
+                    {
+                        day: 8,
+                        title: "시장 조사 및 경쟁사 분석",
+                        summary: "웹 서칭 기능을 활용한 실시간 트렌드 리서치",
+                        details: "• <b>이론:</b> AI 검색(Search)의 한계(환각 현상)와 교차 검증 방법.<br>• <b>실습:</b> 특정 산업군(예: 친환경 패키징)의 최근 1년 트렌드와 주요 경쟁사 3곳의 강약점 표(Table)로 만들기.<br>• <b>정리:</b> 분석 데이터를 GitHub 레포지토리에 업로드하고 기록 관리 시작하기."
+                    }
+                ]
+            },
+            {
+                week: 3,
+                weekTitle: "3주차: 데이터 인사이트 및 협업 도구",
+                days: [
+                    {
+                        day: 9,
+                        title: "엑셀 비서: 데이터 전처리 및 함수 마스터",
+                        summary: "복잡한 엑셀 수식 대신 AI에게 데이터 분석 맡기기",
+                        details: "• <b>이론:</b> 데이터 구조의 이해(로우 데이터 vs 가공 데이터).<br>• <b>실습:</b> 지저분한 고객 데이터 엑셀 파일을 업로드하여 '주소 분리', '중복 제거', '특정 조건 추출'을 AI에게 명령하여 결과 파일 다운로드하기.<br>• <b>응용:</b> 내가 원하는 결과값을 위해 필요한 엑셀 수식을 AI에게 물어보고 적용하기."
+                    },
+                    {
+                        day: 10,
+                        title: "대시보드 기획 및 시각화 인사이트",
+                        summary: "데이터를 보고서에 쓸 수 있는 차트로 변환하기",
+                        details: "• <b>이론:</b> 목적에 맞는 차트 선택법 (비교, 추이, 비중).<br>• <b>실습:</b> 매출 데이터를 AI에게 주고 '가장 의미 있는 인사이트 3가지'를 차트 이미지와 함께 도출해달라고 요청하기.<br>• <b>정리:</b> 분석 결과를 Markdown 형식으로 작성하여 GitHub에 문서화하기."
+                    },
+                    {
+                        day: 11,
+                        title: "아이디어 브레인스토밍 및 가설 검증",
+                        summary: "AI를 전문 컨설턴트로 활용하여 신사업 가설 세우기",
+                        details: "• <b>이론:</b> SCAMPER 기법을 활용한 아이디어 확장.<br>• <b>실습:</b> 현재 진행 중인 업무의 문제점을 입력하고 AI와 함께 10가지 해결 대안 브레인스토밍하기.<br>• <b>검증:</b> 제안된 아이디어 중 하나를 골라 'Pre-mortem(사전 사후 분석)'을 통해 실패 요인 미리 진단하기."
+                    },
+                    {
+                        day: 12,
+                        title: "GitHub Project: 업무 칸반 보드 구축",
+                        summary: "GitHub Issues와 Project 기능을 활용한 할 일 관리",
+                        details: "• <b>이론:</b> 애자일(Agile) 업무 방식과 칸반(Kanban) 시스템의 이해.<br>• <b>실습:</b> GitHub 저장소 내에 'Project' 탭을 활성화하고 To-do / In Progress / Done 상태의 칸반 보드 만들기.<br>• <b>연동:</b> AI가 짜준 16일 커리큘럼을 개별 Issue로 등록하여 일정 관리 시작하기."
+                    }
+                ]
+            },
+            {
+                week: 4,
+                weekTitle: "4주차: 실무 통합 프로젝트",
+                days: [
+                    {
+                        day: 13,
+                        title: "개별 프로젝트 기획 및 범위 확정",
+                        summary: "그동안 배운 도구를 모두 사용하는 개인 프로젝트 정의",
+                        details: "• <b>활동:</b> '나만의 AI 업무 매뉴얼 만들기' 혹은 '특정 주제 리서치 리포트' 중 주제 선택.<br>• <b>실습:</b> AI와 상담하여 프로젝트의 목차를 잡고, 필요한 리소스를 GitHub Issue에 정리하기.<br>• <b>상담:</b> AI에게 '내 프로젝트의 보완점'을 물어보고 수정하기."
+                    },
+                    {
+                        day: 14,
+                        title: "AI와 함께하는 집중 콘텐츠 제작",
+                        summary: "ChatGPT/Gemini를 총동원하여 결과물 생성",
+                        details: "• <b>활동:</b> 1일차~12일차까지의 모든 기법 동원.<br>• <b>실습:</b> Gemini로 자료 조사, ChatGPT로 텍스트 초안 작성, DALL-E로 시각 자료 생성하여 하나의 완성된 문서(Markdown 또는 PDF) 만들기.<br>• <b>관리:</b> 작업 중간 과정을 GitHub에 수시로 업데이트(Commit)하기."
+                    },
+                    {
+                        day: 15,
+                        title: "최종 검수 및 피드백 루프",
+                        summary: "AI에게 결과물 평가받고 완성도 높이기",
+                        details: "• <b>활동:</b> 완성된 결과물을 AI에게 보여주고 '냉정한 상사' 혹은 '전문 편집자' 역할을 부여해 피드백 받기.<br>• <b>실습:</b> 지적된 사항을 수정하여 결과물 고도화.<br>• <b>정리:</b> GitHub 저장소의 README 파일을 깔끔하게 정리하여 '최종 결과물 공유 페이지'로 변신시키기."
+                    },
+                    {
+                        day: 16,
+                        title: "최종 발표 및 향후 AI 활용 계획 수립",
+                        summary: "학습 내용 회고 및 나만의 AI 워크플로우 확정",
+                        details: "• <b>활동:</b> 16일간의 결과물을 하나로 묶어 공유.<br>• <b>실습:</b> 앞으로 매일 업무에서 AI를 어떻게 활용할지 'AI 루틴(Daily Routine)' 설계하기.<br>• <b>평가:</b> 초기에 세웠던 목표 달성도 체크 및 셀프 시상식."
+                    }
+                ]
+            }
+        ];
+
+        // --- Render UI ---
+        const container = document.getElementById('curriculum-list');
+
+        curriculumData.forEach(week => {
+            const weekSection = document.createElement('section');
+            weekSection.id = `week${week.week}`;
+            weekSection.className = "space-y-6";
+            
+            let html = `
+                <div class="flex items-center gap-4 mb-8">
+                    <h3 class="text-2xl font-bold text-slate-900">${week.weekTitle}</h3>
+                    <div class="flex-grow h-px bg-slate-200"></div>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            `;
+
+            week.days.forEach(day => {
+                html += `
+                    <div class="bg-white p-6 rounded-2xl border border-slate-200 card-shadow transition-all hover:border-emerald-300">
+                        <div class="flex justify-between items-start mb-4">
+                            <span class="bg-emerald-100 text-emerald-700 text-xs font-bold px-3 py-1 rounded-full uppercase">Day ${day.day}</span>
+                            <span class="text-slate-300 text-2xl font-serif">"</span>
+                        </div>
+                        <h4 class="text-xl font-bold text-slate-800 mb-2">${day.title}</h4>
+                        <p class="text-slate-500 text-sm mb-4 leading-relaxed">${day.summary}</p>
+                        
+                        <button onclick="toggleDetail('day-${day.day}')" class="text-emerald-600 font-bold text-xs flex items-center gap-1 hover:underline">
+                            실습 디테일 더보기 
+                            <span id="icon-day-${day.day}">↓</span>
+                        </button>
+                        
+                        <div id="day-${day.day}" class="detail-content mt-4 pt-4 border-t border-slate-100 text-sm text-slate-600 leading-7">
+                            ${day.details}
+                        </div>
+                    </div>
+                `;
+            });
+
+            html += `</div>`;
+            weekSection.innerHTML = html;
+            container.appendChild(weekSection);
+        });
+
+        // --- Interactivity ---
+        function toggleDetail(id) {
+            const el = document.getElementById(id);
+            const icon = document.getElementById('icon-' + id);
+            if (el.classList.contains('active')) {
+                el.classList.remove('active');
+                icon.innerText = '↓';
+            } else {
+                el.classList.add('active');
+                icon.innerText = '↑';
+            }
+        }
+
+        // --- Chart ---
+        const ctx = document.getElementById('skillChart').getContext('2d');
+        new Chart(ctx, {
+            type: 'radar',
+            data: {
+                labels: ['프롬프트 전략', 'Gemini 멀티모달', '데이터 분석', 'GitHub 프로젝트 관리', '콘텐츠 기획', '업무 자동화'],
+                datasets: [{
+                    label: '학습 비중 (%)',
+                    data: [90, 85, 75, 80, 85, 70],
+                    backgroundColor: 'rgba(16, 185, 129, 0.2)',
+                    borderColor: '#10b981',
+                    pointBackgroundColor: '#10b981',
+                    borderWidth: 2
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    r: {
+                        beginAtZero: true,
+                        max: 100,
+                        ticks: { display: false }
+                    }
+                },
+                plugins: {
+                    legend: { display: false }
+                }
+            }
+        });
+    </script>
+</body>
+</html>
